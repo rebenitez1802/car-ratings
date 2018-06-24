@@ -1,0 +1,31 @@
+{
+  "name": "car-ratings",
+  "version": "1.0.0",
+  "description": "API in Node.js to get information about crash test ratings for vehicles.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "start": "npm run build && node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rebenitez1802/car-ratings.git"
+  },
+  "author": "Rafael Benitez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rebenitez1802/car-ratings/issues"
+  },
+  "homepage": "https://github.com/rebenitez1802/car-ratings#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "rimraf": "^2.6.2"
+  }
+}
