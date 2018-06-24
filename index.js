@@ -1,13 +1,16 @@
 import  express from 'express';
 
-import { json, urlencoded } from 'body-parser';
+import { json } from 'body-parser';
 import axios from 'axios';
 
 const app = express()
+//function to obtain API urls
 const vehiclesUrl = (year,manufacturer,model)=>{return `https://one.nhtsa.gov/webapi/api/SafetyRatings/modelyear/${year}/make/${manufacturer}/model/${model}?format=json`}
 const ratingUrl = (VehicleId)=>{return `https://one.nhtsa.gov/webapi/api/SafetyRatings/VehicleId/${VehicleId}?format=json`}
+
 app.use( json() );       // to support JSON-encoded bodies
 
+//this method extract de extract the data needed into a object with the final format
 function getResulrObject(data){
     var res = {Count:data.Count,Results:[]}
     if(data.Results){
@@ -17,13 +20,14 @@ function getResulrObject(data){
     }
     return res;
 }
+//this method handle the API calls to retrive de data
 async function getVehicleData(year, manufacturer, model, addRatings = false){
-    
-    console.log(vehiclesUrl(year,manufacturer,model))
     try{
+        //make request to the API
         var data = await axios.get(vehiclesUrl(year,manufacturer,model))
-        //console.log(data.data)
+        //extract data to resultObject
         var resultObject = getResulrObject(data.data);   
+        //if rating is required make all de API call needed and add the data to the resultObject
         if (addRatings){
             var promises = resultObject.Results.map(((vehicle)=>{
                 return axios.get(ratingUrl(vehicle.VehicleId))
@@ -45,18 +49,8 @@ async function getVehicleData(year, manufacturer, model, addRatings = false){
     }catch(err){
         console.log(err)
         return  {Count:0,Results:[]}
-    }
-   
-   
-
-    
+    }   
 }
-
-app.get('/', (req, res)=> {
-    res.send({message: 'Try http://localhost:8888/vehicles/2015/Audi/A3'})
-    
-});
-
 /*
 * `GET http://localhost:8888/vehicles/2015/Audi/A3`
 * `GET http://localhost:8888/vehicles/2015/Toyota/Yaris`
@@ -79,6 +73,10 @@ app.post('/vehicles',async (req,res)=>{
     res.send(data)
 })
 
+app.get('/', (req, res)=> {
+    res.send({message: 'Try http://localhost:8888/vehicles/2015/Audi/A3'})
+    
+});
   app.listen(8888,  ()=> {
 	console.log('The app is listening on port 8888!')
 	
